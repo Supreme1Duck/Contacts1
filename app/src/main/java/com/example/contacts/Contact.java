@@ -2,19 +2,19 @@ package com.example.contacts;
 
 import java.io.Serializable;
 
-public class Phone implements Serializable {
-    private String phoneNumber;
+public class Contact implements Serializable {
+    private String contactNumber;
     private String holderName;
     private int resourceId;
 
-    Phone(int id, String PN, String HN) {
-        phoneNumber = PN;
+    Contact(int id, String PN, String HN) {
+        contactNumber = PN;
         holderName = HN;
         resourceId = id;
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return contactNumber;
     }
 
     public String getHolderName() {

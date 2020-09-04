@@ -7,28 +7,26 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
-public class PhoneAdapter extends RecyclerView.Adapter<PhoneAdapter.PhoneHolder> implements Filterable {
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactsHolder> implements Filterable {
 
     private OnNoteClickListener clickListener;
-    private ArrayList<Phone> phones;
-    private ArrayList<Phone> newphones;
-    private Filter PhoneFilter = new Filter() {
+    private ArrayList<Contact> phones;
+    private ArrayList<Contact> newphones;
+    private Filter phoneFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-            ArrayList<Phone> filteredlist = new ArrayList<>();
+            ArrayList<Contact> filteredlist = new ArrayList<>();
 
             if (charSequence == null || charSequence.length() == 0) {
                 filteredlist.addAll(newphones);
             } else {
                 String filternpattern = charSequence.toString().toLowerCase().trim();
 
-                for (Phone phone : newphones) {
+                for (Contact phone : newphones) {
                     if (phone.getHolderName().toLowerCase().contains(filternpattern)) {
                         filteredlist.add(phone);
                     }
@@ -47,7 +45,7 @@ public class PhoneAdapter extends RecyclerView.Adapter<PhoneAdapter.PhoneHolder>
         }
     };
 
-    PhoneAdapter(ArrayList<Phone> phones, OnNoteClickListener listener) {
+    ContactsAdapter(ArrayList<Contact> phones, OnNoteClickListener listener) {
         this.phones = phones;
         newphones = new ArrayList<>(phones);
         clickListener = listener;
@@ -55,13 +53,13 @@ public class PhoneAdapter extends RecyclerView.Adapter<PhoneAdapter.PhoneHolder>
 
     @NonNull
     @Override
-    public PhoneHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ContactsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contactsview, parent, false);
-        return new PhoneHolder(view);
+        return new ContactsHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PhoneHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ContactsHolder holder, int position) {
         holder.text_number.setText(phones.get(position).getPhoneNumber());
         holder.text_name.setText(phones.get(position).getHolderName());
         holder.image.setImageResource(phones.get(position).getResourceId());
@@ -74,15 +72,15 @@ public class PhoneAdapter extends RecyclerView.Adapter<PhoneAdapter.PhoneHolder>
 
     @Override
     public Filter getFilter() {
-        return PhoneFilter;
+        return phoneFilter;
     }
 
-    public class PhoneHolder extends RecyclerView.ViewHolder {
+    public class ContactsHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView text_name;
         TextView text_number;
 
-        PhoneHolder(View view) {
+        ContactsHolder(View view) {
             super(view);
             image = view.findViewById(R.id.KartinkaKontakta);
             text_name = view.findViewById(R.id.text_name);

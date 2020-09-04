@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,11 +26,8 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
     private final String POSITION_TAG = "position";
     private RecyclerView recycle;
     private TextView main_text;
-    private ArrayList<Phone> phones;
-    private PhoneAdapter adapter;
-    private FloatingActionButton actionButton;
-    private ImageView kartinkaKontakta;
-    private OnNoteClickListener listener;
+    private ArrayList<Contact> phones;
+    private ContactsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +38,12 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
         main_text = findViewById(R.id.main_Text);
         load();
         recycle = findViewById(R.id.recycle);
-        kartinkaKontakta = findViewById(R.id.KartinkaKontakta);
-        actionButton = findViewById(R.id.floatingActionButton);
+        FloatingActionButton actionButton = findViewById(R.id.floatingActionButton);
         recycle.setLayoutManager(new LinearLayoutManager(this));
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddNumberOrEmailActivity.class);
-                //intent.putExtra("ContactArray", phones);
                 startActivityForResult(intent, 1);
             }
         };
@@ -60,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
     protected void onStart() {
         super.onStart();
         if (phones != null && phones.size() != 0) {
-            adapter = new PhoneAdapter(phones, this);
+            adapter = new ContactsAdapter(phones, this);
             recycle.setAdapter(adapter);
             main_text.setText("");
         } else {
@@ -74,10 +68,13 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (data == null) return;
-            phones = (ArrayList<Phone>) data.getSerializableExtra("ContactArray");
+            phones.add((Contact) data.getSerializableExtra("ContactArray"));
         }
         if (requestCode == 2) {
-            phones = (ArrayList<Phone>) data.getSerializableExtra(TAG);
+            assert data != null;
+            if (1 != data.getIntExtra("Check", 0)){
+                phones.add(data.getIntExtra(POSITION_TAG, 0), (Contact)data.getSerializableExtra(TAG));
+            }
         }
     }
 
@@ -94,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("task list", null);
-        Type type = new TypeToken<ArrayList<Phone>>() {
+        Type type = new TypeToken<ArrayList<Contact>>() {
         }.getType();
         phones = gson.fromJson(json, type);
         if (phones == null) {
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        phones = (ArrayList<Phone>) savedInstanceState.getSerializable("Phones");
+        phones = (ArrayList<Contact>) savedInstanceState.getSerializable("Phones");
     }
 
     @Override
@@ -143,10 +140,10 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
 
     @Override
     public void OnClick(int position) {
-        Intent intent = new Intent(MainActivity.this, EditNumber.class);
-        intent.putExtra("position", position);
-        intent.putExtra(TAG, phones);
+        Intent intent = new Intent(MainActivity.this, EditContact.class);
+        intent.putExtra(POSITION_TAG, position);
+        intent.putExtra(TAG, phones.get(position));
+        phones.remove(phones.get(position));
         startActivityForResult(intent, 2);
     }
-
 }
