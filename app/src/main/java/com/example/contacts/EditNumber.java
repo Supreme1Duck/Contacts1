@@ -17,11 +17,11 @@ import androidx.appcompat.widget.Toolbar;
 import java.util.ArrayList;
 
 public class EditNumber extends AppCompatActivity {
+    private final String POSITION_TAG = "position";
+    private final String TAG = "Phones";
     private ArrayList<Phone> phonestoEdit;
     private EditText edit_name, edit_number;
     private Button button_remove;
-    private final String POSITION_TAG = "position";
-    private final String TAG = "Phones";
     private int SendedPosition;
     private Phone SendedPhone;
     private Intent intent;
@@ -41,7 +41,7 @@ public class EditNumber extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         intent = getIntent();
 
-        SendedPosition = intent.getIntExtra(POSITION_TAG , 0);
+        SendedPosition = intent.getIntExtra(POSITION_TAG, 0);
         phonestoEdit = (ArrayList<Phone>) intent.getSerializableExtra(TAG);
 
         SendedPhone = phonestoEdit.get(SendedPosition);
@@ -72,7 +72,7 @@ public class EditNumber extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.apply){
+        if (item.getItemId() == R.id.apply) {
             int ResourceID = phonestoEdit.get(SendedPosition).getResourceId();
             phonestoEdit.remove(SendedPosition);
             phonestoEdit.add(SendedPosition, new Phone(ResourceID, edit_number.getText().toString(), edit_name.getText().toString()));

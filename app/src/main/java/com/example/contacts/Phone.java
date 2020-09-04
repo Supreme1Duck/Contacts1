@@ -1,29 +1,27 @@
 package com.example.contacts;
 
-import android.os.Parcelable;
-
 import java.io.Serializable;
 
 public class Phone implements Serializable {
-    private String PhoneNumber;
-    private String HolderName;
-    private int ResourceId;
+    private String phoneNumber;
+    private String holderName;
+    private int resourceId;
 
-    Phone(int id, String PN, String HN){
-        PhoneNumber = PN;
-        HolderName = HN;
-        ResourceId = id;
+    Phone(int id, String PN, String HN) {
+        phoneNumber = PN;
+        holderName = HN;
+        resourceId = id;
     }
 
     public String getPhoneNumber() {
-        return PhoneNumber;
+        return phoneNumber;
     }
 
     public String getHolderName() {
-        return HolderName;
+        return holderName;
     }
 
     public int getResourceId() {
-        return ResourceId;
+        return resourceId;
     }
 }

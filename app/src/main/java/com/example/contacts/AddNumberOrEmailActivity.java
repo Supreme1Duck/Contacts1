@@ -9,29 +9,26 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import java.util.ArrayList;
 
-
-public class AddNumber extends AppCompatActivity {
+public class AddNumberOrEmailActivity extends AppCompatActivity {
     private ImageView image;
     private RadioButton Phone;
     private RadioButton Email;
-private ArrayList<Phone> phones;
-private EditText text1;
-private EditText text2;
+    private ArrayList<Phone> phones;
+    private EditText text1;
+    private EditText text2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addnumber);
         setTitle("Add");
-        phones = (ArrayList<Phone>) getIntent().getSerializableExtra("ContactArray");
+        //phones = (ArrayList<Phone>) getIntent().getSerializableExtra("ContactArray");
         image = findViewById(R.id.KartinkaKontakta);
         text1 = findViewById(R.id.text1);
         text2 = findViewById(R.id.text2);
@@ -49,26 +46,24 @@ private EditText text2;
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_add, menu);
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.applyAdd){
+        if (item.getItemId() == R.id.applyAdd) {
             if (text1.getText().toString().trim().equals("") || text2.getText().toString().trim().equals("")) {
 
-                Toast.makeText(AddNumber.this, "Something wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddNumberOrEmailActivity.this, "Something wrong", Toast.LENGTH_SHORT).show();
 
-            }else{
+            } else {
 
                 Intent intent = new Intent();
 
-                if (Phone.isChecked()){
+                if (Phone.isChecked()) {
                     phones.add(new Phone(R.drawable.face, text1.getText().toString(), text2.getText().toString()));
                 }
-                if (Email.isChecked()){
+                if (Email.isChecked()) {
                     phones.add(new Phone(R.drawable.baseline_language_black_18dp, text1.getText().toString(), text2.getText().toString()));
                 }
 

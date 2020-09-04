@@ -1,13 +1,5 @@
 package com.example.contacts;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,50 +9,48 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnNoteClickListener  {
-    private RecyclerView recycle;
-    private TextView main_text;
-    ArrayList<Phone> phones;
-    PhoneAdapter adapter;
-    FloatingActionButton actionButton;
-    ImageView KartinkaKontakta;
-    OnNoteClickListener listener;
+public class MainActivity extends AppCompatActivity implements OnNoteClickListener {
     private final String TAG = "Phones";
     private final String POSITION_TAG = "position";
+    private RecyclerView recycle;
+    private TextView main_text;
+    private ArrayList<Phone> phones;
+    private PhoneAdapter adapter;
+    private FloatingActionButton actionButton;
+    private ImageView kartinkaKontakta;
+    private OnNoteClickListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         main_text = findViewById(R.id.main_Text);
-        Load();
+        load();
         recycle = findViewById(R.id.recycle);
-        KartinkaKontakta = findViewById(R.id.KartinkaKontakta);
+        kartinkaKontakta = findViewById(R.id.KartinkaKontakta);
         actionButton = findViewById(R.id.floatingActionButton);
-
         recycle.setLayoutManager(new LinearLayoutManager(this));
-
-
-
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddNumber.class);
-                intent.putExtra("ContactArray", phones);
-                startActivityForResult(intent,1);
+                Intent intent = new Intent(MainActivity.this, AddNumberOrEmailActivity.class);
+                //intent.putExtra("ContactArray", phones);
+                startActivityForResult(intent, 1);
             }
         };
         actionButton.setOnClickListener(listener);
@@ -69,15 +59,14 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (phones != null && phones.size()!=0) {
+        if (phones != null && phones.size() != 0) {
             adapter = new PhoneAdapter(phones, this);
             recycle.setAdapter(adapter);
             main_text.setText("");
-        }else{
+        } else {
             phones = new ArrayList<>();
             main_text.setText(getString(R.string.nocontacts));
         }
-
     }
 
     @Override
@@ -86,14 +75,13 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
         if (requestCode == 1) {
             if (data == null) return;
             phones = (ArrayList<Phone>) data.getSerializableExtra("ContactArray");
-            //Objects.requireNonNull(recycle.getAdapter()).notifyDataSetChanged();
         }
-        if (requestCode ==2){
+        if (requestCode == 2) {
             phones = (ArrayList<Phone>) data.getSerializableExtra(TAG);
         }
     }
 
-    private void Save(){
+    private void save() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -102,14 +90,14 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
         editor.apply();
     }
 
-    private void Load(){
+    private void load() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("task list", null);
-        Type type = new TypeToken<ArrayList<Phone>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Phone>>() {
+        }.getType();
         phones = gson.fromJson(json, type);
-
-        if (phones == null){
+        if (phones == null) {
             main_text.setText(getString(R.string.nocontacts));
             phones = new ArrayList<>();
         }
@@ -130,23 +118,20 @@ public class MainActivity extends AppCompatActivity implements OnNoteClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Save();
+        save();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);

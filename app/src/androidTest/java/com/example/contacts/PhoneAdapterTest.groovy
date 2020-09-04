@@ -1,4 +1,4 @@
 package com.example.contacts
 
-class PhoneAdapterTest extends groovy.util.GroovyTestCase {
+class PhoneAdapterTest extends GroovyTestCase {
 }
